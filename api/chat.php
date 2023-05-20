@@ -61,11 +61,11 @@ function index()
     //     $gpt_param['stop'] = $_GET['stop'];
     // }
 
-    if (empty($_GET['messages'])) {
+    if (empty($_POST['messages'])) {
         return JsonResponse(0, "参数 'messages' 数组");
     }
 
-    $param['messages'] = $_GET['messages'];
+    $param['messages'] = $_POST['messages'];
 
     $apiKey  = $_POST['apiKey'] ?? '';
     if (empty($apiKey) || !is_string($apiKey)) {
