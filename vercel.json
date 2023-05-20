@@ -4,7 +4,7 @@
             "runtime": "vercel-php@0.5.2",
             "excludeFiles": "{test/**}",
             "memory": 4,
-            "maxDuration": 30
+            "maxDuration": 16
         }
     },
     "routes": [
