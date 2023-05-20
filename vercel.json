@@ -4,13 +4,13 @@
             "runtime": "vercel-php@0.5.2",
             "excludeFiles": "{test/**}",
             "memory": 128,
-            "maxDuration": 10
+            "maxDuration": 60
         },
         "api/models.php": {
             "runtime": "vercel-php@0.5.2",
             "excludeFiles": "{test/**}",
             "memory": 128,
-            "maxDuration": 10
+            "maxDuration": 60
         }
     },
     "routes": [
