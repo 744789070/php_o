@@ -14,6 +14,8 @@ function openAIChatCompletionsRequest($param, $apikey)
     ));
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+
     $response = curl_exec($ch);
     curl_close($ch);
     // 处理响应
@@ -32,6 +34,7 @@ function JsonResponse($code, $data, $msg = "")
 
 function index()
 {
+    return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     if (empty($_POST['param'])) {
         return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
