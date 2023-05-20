@@ -2,12 +2,12 @@
 
 $_data = [];
 
-function openAIChatCompletionsRequest($gpt_param, $apiKey)
+function openAIChatCompletionsRequest($param, $apiKey)
 {
     $ch = curl_init('https://api.openai.com/v1/chat/completions');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($gpt_param));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
         'Authorization: Bearer ' . $apiKey
@@ -43,8 +43,7 @@ function JsonResponse($code, $data, $msg = "")
 
 function index()
 {
-    $gpt_param = array();
-    $gpt_param['prompt'] = isset($_GET['prompt']) ? $_GET['prompt'] : '';
+    $param = array();
 
     // if (isset($_GET['maxTokens'])) {
     //     $gpt_param['maxTokens'] = $_GET['maxTokens'];
@@ -62,17 +61,19 @@ function index()
     //     $gpt_param['stop'] = $_GET['stop'];
     // }
 
-    if (empty($gpt_param['prompt']) || !is_string($gpt_param['prompt'])) {
-        return JsonResponse(0, "参数 'prompt' 必须是一个非空字符串");
+    if (empty($_GET['messages'])) {
+        return JsonResponse(0, "参数 'messages' 数组");
     }
 
-    $apiKey  = $_GET['apiKey'] ?? '';
+    $param['messages'] = $_GET['messages'];
+
+    $apiKey  = $_POST['apiKey'] ?? '';
     if (empty($apiKey) || !is_string($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
     }
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
     try {
-        $data = openAIChatCompletionsRequest($gpt_param, $apiKey);
+        $data = openAIChatCompletionsRequest($param, $apiKey);
         JsonResponse(1, $data);
     } catch (Exception $e) {
         $data = "Error: " . $e->getMessage();
