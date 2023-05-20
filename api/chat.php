@@ -1,43 +1,17 @@
 <?php
 
-function openAIChatCompletionsRequest($prompt, $maxTokens, $temperature, $model, $n, $stop, $apiKey)
+function openAIChatCompletionsRequest($gpt_param, $apiKey)
 {
     // 检查参数合法性
-    if (empty($prompt) || !is_string($prompt)) {
+    if (empty($gpt_param['prompt']) || !is_string($gpt_param['prompt'])) {
         throw new Exception("参数 'prompt' 必须是一个非空字符串");
     }
-
-    if (!is_int($maxTokens) || $maxTokens <= 0) {
-        throw new Exception("参数 'maxTokens' 必须是一个大于零的整数");
-    }
-
-    if (!is_numeric($temperature) || $temperature <= 0 || $temperature > 1) {
-        throw new Exception("参数 'temperature' 必须是一个介于 0 到 1 之间的数值");
-    }
-
-    if (empty($model) || !is_string($model)) {
-        throw new Exception("参数 'model' 必须是一个非空字符串");
-    }
-
-    if (!is_int($n) || $n <= 0) {
-        throw new Exception("参数 'n' 必须是一个大于零的整数");
-    }
-
-    // 构建请求数据
-    $data = array(
-        'prompt' => $prompt,
-        'max_tokens' => $maxTokens,
-        'temperature' => $temperature,
-        'model' => $model,
-        'n' => $n,
-        'stop' => $stop
-    );
 
     // 发起请求
     $ch = curl_init('https://api.openai.com/v1/chat/completions');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($gpt_param));
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
         'Authorization: Bearer ' . $apiKey
@@ -67,13 +41,26 @@ function JsonResponse($code, $data)
 
 function index()
 {
-    // 外部获取 GET 请求参数
-    $prompt = isset($_GET['prompt']) ? $_GET['prompt'] : '';
-    $maxTokens = isset($_GET['maxTokens']) ? intval($_GET['maxTokens']) : 0;
-    $temperature = isset($_GET['temperature']) ? floatval($_GET['temperature']) : 0.0;
-    $model = isset($_GET['model']) ? $_GET['model'] : '';
-    $n = isset($_GET['n']) ? intval($_GET['n']) : 0;
-    $stop = isset($_GET['stop']) ? $_GET['stop'] : '';
+    $gpt_param = array();
+    $gpt_param['prompt'] = isset($_GET['prompt']) ? $_GET['prompt'] : '';
+
+
+    if (isset($_GET['maxTokens'])) {
+        $gpt_param['maxTokens'] = $_GET['maxTokens'];
+    }
+
+    if (isset($_GET['model'])) {
+        $gpt_param['model'] = $_GET['model'];
+    }
+
+    if (isset($_GET['temperature'])) {
+        $gpt_param['temperature'] = $_GET['temperature'];
+    }
+
+    if (isset($_GET['stop'])) {
+        $gpt_param['stop'] = $_GET['stop'];
+    }
+
     $apiKey  = $_GET['apiKey'] ?? '';
 
     // 检查参数合法性
@@ -84,7 +71,7 @@ function index()
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
 
     try {
-        $data = openAIChatCompletionsRequest($prompt, $maxTokens, $temperature, $model, $n, $stop, $apiKey);
+        $data = openAIChatCompletionsRequest($gpt_param, $apiKey);
         JsonResponse(1, $data);
     } catch (Exception $e) {
         $data = "Error: " . $e->getMessage();
