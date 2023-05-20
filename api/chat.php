@@ -64,15 +64,17 @@ function index()
     //     return JsonResponse(0, "参数 'messages' 数组");
     // }
 
-    var_dump($_POST);
-    
-    if (empty($_POST['messages'])) {
-        return JsonResponse(0, "参数 'messages' 不合法 :" . json_encode($_POST));
+    if (empty($_POST['param'])) {
+        return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
 
+    $param = $_POST['param'];
 
-    $param['messages'] = $_POST['messages'];
+    if (empty($_POST['messages'])) {
+        return JsonResponse(0, "参数 'messages' 不合法 :" . $param);
+    }
 
+    $param = json_decode($param);
     $apiKey  = $_POST['apiKey'] ?? '';
     if (empty($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
