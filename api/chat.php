@@ -12,6 +12,7 @@ function openAIChatCompletionsRequest($param, $apikey)
         'Content-Type: application/json',
         'Authorization: Bearer ' . $apikey
     ));
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $response = curl_exec($ch);
     curl_close($ch);
