@@ -3,8 +3,8 @@
         "api/chat.php": {
             "runtime": "vercel-php@0.5.2",
             "excludeFiles": "{test/**}",
-            "memory": 32,
-            "maxDuration": 60
+            "memory": 16,
+            "maxDuration": 30
         }
     },
     "routes": [
