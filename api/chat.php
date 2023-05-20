@@ -64,8 +64,8 @@ function index()
     //     return JsonResponse(0, "参数 'messages' 数组");
     // }
 
-    $param['messages'] = $_POST['messages'];
-    JsonResponse(0, [$_POST,$_POST['messages']]);
+    // $param['messages'] = $_POST['messages'];
+    JsonResponse(0, [$_POST,gettype($_POST)]);
     return;
     $apiKey  = $_POST['apiKey'] ?? '';
     if (empty($apiKey) || !is_string($apiKey)) {
