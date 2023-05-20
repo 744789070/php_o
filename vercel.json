@@ -11,6 +11,10 @@
         {
             "src": "/",
             "dest": "/api/index"
+        },
+        {
+            "src": "/models",
+            "dest": "/api/models"
         }
     ]
 }

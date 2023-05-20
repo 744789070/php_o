@@ -1,66 +1,88 @@
 <?php
 
-function callChatGPT($question, $api_key)
+function openAIChatCompletionsRequest($prompt, $maxTokens, $temperature, $model, $n, $stop, $apiKey)
 {
-    $endpoint = 'https://api.openai.com/v1/chat/completions';
-    $headers = array(
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $api_key
-    );
+    // 检查参数合法性
+    if (empty($prompt) || !is_string($prompt)) {
+        throw new Exception("参数 'prompt' 必须是一个非空字符串");
+    }
+
+    if (!is_int($maxTokens) || $maxTokens <= 0) {
+        throw new Exception("参数 'maxTokens' 必须是一个大于零的整数");
+    }
+
+    if (!is_numeric($temperature) || $temperature <= 0 || $temperature > 1) {
+        throw new Exception("参数 'temperature' 必须是一个介于 0 到 1 之间的数值");
+    }
+
+    if (empty($model) || !is_string($model)) {
+        throw new Exception("参数 'model' 必须是一个非空字符串");
+    }
+
+    if (!is_int($n) || $n <= 0) {
+        throw new Exception("参数 'n' 必须是一个大于零的整数");
+    }
+
+    // 构建请求数据
     $data = array(
-        'model' => 'gpt-3.5-turbo',
-        'messages' => array(
-            array('role' => 'system', 'content' => 'You are a helpful assistant.'),
-            array('role' => 'user', 'content' => $question)
-        )
+        'prompt' => $prompt,
+        'max_tokens' => $maxTokens,
+        'temperature' => $temperature,
+        'model' => $model,
+        'n' => $n,
+        'stop' => $stop
     );
-    $ch = curl_init();
-    curl_setopt_array($ch, array(
-        CURLOPT_URL => $endpoint,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => $headers,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($data)
+
+    // 发起请求
+    $ch = curl_init('https://api.openai.com/v1/chat/completions');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
     ));
+
     $response = curl_exec($ch);
-    if ($response === false) {
-        $error = curl_error($ch);
-        throw new Exception("cURL request failed: " . $error);
-    }
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ($httpCode !== 200) {
-        throw new Exception("HTTP request failed with code " . $httpCode);
+
+    // 处理响应
+    if ($response === false) {
+        throw new Exception("请求失败：" . curl_error($ch));
     }
-    return $response;
+
+    $responseData = json_decode($response, true);
+    if (!$responseData) {
+        throw new Exception("无法解析响应数据");
+    }
+
+    return $responseData;
 }
+
 
 function JsonResponse($code, $data)
 {
-    return json_encode(array('code' => $code, 'data' => $data));
+    echo json_encode(array('code' => $code, 'data' => $data));
 }
 
 function index()
 {
-    if (!isset($_GET['q'])) {
-        echo JsonResponse(0, "488");
-        return "";
-    }
+    // 外部获取 GET 请求参数
+    $prompt = isset($_GET['prompt']) ? $_GET['prompt'] : '';
+    $maxTokens = isset($_GET['maxTokens']) ? intval($_GET['maxTokens']) : 0;
+    $temperature = isset($_GET['temperature']) ? floatval($_GET['temperature']) : 0.0;
+    $model = isset($_GET['model']) ? $_GET['model'] : '';
+    $n = isset($_GET['n']) ? intval($_GET['n']) : 0;
+    $stop = isset($_GET['stop']) ? $_GET['stop'] : '';
+    $apiKey  = $_GET['apiKey'] ?? '';
+    $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
 
-    if (!isset($_GET['k'])) {
-        echo JsonResponse(0, "488");
-        return "";
-    }
-    $q  = $_GET['q'];
-    $k  = $_GET['k'];
-    $open_key = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $k;
     try {
-        $data = callChatGPT($q, $open_key);
-        echo JsonResponse(1, $data);
+        $data = openAIChatCompletionsRequest($prompt, $maxTokens, $temperature, $model, $n, $stop, $apiKey);
+        JsonResponse(1, $data);
     } catch (Exception $e) {
-        // 处理异常
         $data = "Error: " . $e->getMessage();
-        echo JsonResponse(0, $data);
+        JsonResponse(0, $data);
     }
 }
 
