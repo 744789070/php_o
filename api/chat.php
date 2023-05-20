@@ -19,15 +19,7 @@ function openAIChatCompletionsRequest($param, $apikey)
     if ($response === false) {
         throw new Exception("请求异常" . curl_error($ch));
     } else {
-        if ($status_code === 200) {
-            $data = json_decode($response, true);
-            if (!$data) {
-                throw new Exception("无法解析响应数据");
-            }
-            return $data;
-        } else {
-            throw new Exception('请求失败，HTTP状态码：' . $status_code);
-        }
+        return $response;
     }
 }
 
