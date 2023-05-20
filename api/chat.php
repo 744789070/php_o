@@ -64,9 +64,12 @@ function index()
     //     return JsonResponse(0, "参数 'messages' 数组");
     // }
 
+    var_dump($_POST);
+    
     if (empty($_POST['messages'])) {
         return JsonResponse(0, "参数 'messages' 不合法 :" . json_encode($_POST));
     }
+
 
     $param['messages'] = $_POST['messages'];
 
