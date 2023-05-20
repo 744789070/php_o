@@ -15,13 +15,9 @@ function openAIChatCompletionsRequest($gpt_param, $apiKey)
     $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $response = curl_exec($ch);
     curl_close($ch);
-    if ($response === false) {
-        throw new Exception("请求失败：" . curl_error($ch));
-    }
-
     // 处理响应
     if ($response === false) {
-        throw new Exception("请求异常");
+        throw new Exception("请求异常" . curl_error($ch));
     } else {
         if ($status_code === 200) {
             $data = json_decode($response, true);
