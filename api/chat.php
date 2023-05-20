@@ -46,21 +46,21 @@ function index()
     $gpt_param = array();
     $gpt_param['prompt'] = isset($_GET['prompt']) ? $_GET['prompt'] : '';
 
-    if (isset($_GET['maxTokens'])) {
-        $gpt_param['maxTokens'] = $_GET['maxTokens'];
-    }
+    // if (isset($_GET['maxTokens'])) {
+    //     $gpt_param['maxTokens'] = $_GET['maxTokens'];
+    // }
 
-    if (isset($_GET['model'])) {
-        $gpt_param['model'] = $_GET['model'];
-    }
+    // if (isset($_GET['model'])) {
+    //     $gpt_param['model'] = $_GET['model'];
+    // }
 
-    if (isset($_GET['temperature'])) {
-        $gpt_param['temperature'] = $_GET['temperature'];
-    }
+    // if (isset($_GET['temperature'])) {
+    //     $gpt_param['temperature'] = $_GET['temperature'];
+    // }
 
-    if (isset($_GET['stop'])) {
-        $gpt_param['stop'] = $_GET['stop'];
-    }
+    // if (isset($_GET['stop'])) {
+    //     $gpt_param['stop'] = $_GET['stop'];
+    // }
 
     if (empty($gpt_param['prompt']) || !is_string($gpt_param['prompt'])) {
         return JsonResponse(0, "参数 'prompt' 必须是一个非空字符串");
