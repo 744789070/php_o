@@ -46,9 +46,10 @@ function index()
     if (empty($_POST['param'])) {
         return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
-    $post_param = json_decode($_POST['param']);
+    $post_param = json_decode($_POST['param'], true);
     var_dump($_POST);
-    $apiKey  = $post_param['apiKey'] ?? '';
+    var_dump($post_param);
+    $apiKey  = $post_param['apiKey'];
     if (empty($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
     }
