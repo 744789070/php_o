@@ -1,5 +1,7 @@
 <?php
 
+$_data = [];
+
 function openAIChatCompletionsRequest($gpt_param, $apiKey)
 {
     $ch = curl_init('https://api.openai.com/v1/chat/completions');
@@ -10,22 +12,37 @@ function openAIChatCompletionsRequest($gpt_param, $apiKey)
         'Content-Type: application/json',
         'Authorization: Bearer ' . $apiKey
     ));
+    $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $response = curl_exec($ch);
     curl_close($ch);
     if ($response === false) {
         throw new Exception("请求失败：" . curl_error($ch));
     }
-    $responseData = json_decode($response, true);
-    if (!$responseData) {
-        throw new Exception("无法解析响应数据");
+
+    // 处理响应
+    if ($response === false) {
+        throw new Exception("请求异常");
+    } else {
+        if ($status_code === 200) {
+            $data = json_decode($response, true);
+            if (!$data) {
+                throw new Exception("无法解析响应数据");
+            }
+            if (isset($data['object']) && $data['object'] === 'chat.completion') {
+                return $data;
+            } else {
+                throw new Exception('出现异常:' . $response);
+            }
+        } else {
+            throw new Exception('请求失败，HTTP状态码：' . $status_code);
+        }
     }
-    return $responseData;
 }
 
 
-function JsonResponse($code, $data)
+function JsonResponse($code, $data, $msg = "")
 {
-    echo json_encode(array('code' => $code, 'data' => $data));
+    echo json_encode(array('code' => $code, 'data' => $data, 'msg' => $msg));
 }
 
 function index()
@@ -50,7 +67,7 @@ function index()
     }
 
     if (empty($gpt_param['prompt']) || !is_string($gpt_param['prompt'])) {
-        throw new Exception("参数 'prompt' 必须是一个非空字符串");
+        return JsonResponse(0, "参数 'prompt' 必须是一个非空字符串");
     }
 
     $apiKey  = $_GET['apiKey'] ?? '';
@@ -66,5 +83,7 @@ function index()
         JsonResponse(0, $data);
     }
 }
+
+
 
 index();
