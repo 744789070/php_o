@@ -1,6 +1,5 @@
 <?php
 
-$_data = [];
 
 function openAIChatCompletionsRequest($param, $apikey)
 {
