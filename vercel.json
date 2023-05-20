@@ -11,12 +11,6 @@
             "excludeFiles": "{test/**}",
             "memory": 256,
             "maxDuration": 15
-        },
-        "api/v.php": {
-            "runtime": "vercel-php@0.5.2",
-            "excludeFiles": "{test/**}",
-            "memory": 256,
-            "maxDuration": 15
         }
     },
     "routes": [
@@ -27,10 +21,6 @@
         {
             "src": "/models",
             "dest": "/api/models"
-        },
-        {
-            "src": "/",
-            "dest": "/api/v"
         }
     ]
 }
