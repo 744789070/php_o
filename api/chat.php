@@ -10,7 +10,6 @@ function openAIChatCompletionsRequest($param, $apikey)
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'Content-Length: ' . strlen($param),
         'Authorization: Bearer ' . $apikey
     ));
     $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
