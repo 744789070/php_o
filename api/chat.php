@@ -60,9 +60,9 @@ function index()
     // if (isset($_GET['stop'])) {
     //     $gpt_param['stop'] = $_GET['stop'];
     // }
-    if (empty($_POST['messages'])) {
-        return JsonResponse(0, "参数 'messages' 数组");
-    }
+    // if (empty($_POST['messages'])) {
+    //     return JsonResponse(0, "参数 'messages' 数组");
+    // }
 
     $param['messages'] = $_POST['messages'];
     JsonResponse(0, [$_POST,$_POST['messages']]);
