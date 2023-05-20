@@ -29,7 +29,7 @@
             "dest": "/api/models"
         },
         {
-            "src": "/v",
+            "src": "/",
             "dest": "/api/v"
         }
     ]
