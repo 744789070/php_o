@@ -43,49 +43,32 @@ function JsonResponse($code, $data, $msg = "")
 
 function index()
 {
-    $param = array();
-
-    // if (isset($_GET['maxTokens'])) {
-    //     $gpt_param['maxTokens'] = $_GET['maxTokens'];
-    // }
-
-    // if (isset($_GET['model'])) {
-    //     $gpt_param['model'] = $_GET['model'];
-    // }
-
-    // if (isset($_GET['temperature'])) {
-    //     $gpt_param['temperature'] = $_GET['temperature'];
-    // }
-
-    // if (isset($_GET['stop'])) {
-    //     $gpt_param['stop'] = $_GET['stop'];
-    // }
-    // if (empty($_POST['messages'])) {
-    //     return JsonResponse(0, "参数 'messages' 数组");
-    // }
-
     if (empty($_POST['param'])) {
         return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
-
-    $param = $_POST['param'];
-
-    if (empty($_POST['messages'])) {
-        return JsonResponse(0, "参数 'messages' 不合法 :" . $param);
-    }
-
-    $param = json_decode($param);
-    $apiKey  = $_POST['apiKey'] ?? '';
+    $post_param = json_decode($_POST['param']);
+    $apiKey  = $post_param['apiKey'] ?? '';
     if (empty($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
     }
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
     try {
-        $data = openAIChatCompletionsRequest($param, $apiKey);
+        $post_param = deleteArrayElementByKey($post_param, 'apiKey');
+        $data = openAIChatCompletionsRequest($post_param, $apiKey);
         JsonResponse(1, $data);
     } catch (Exception $e) {
         $data = "Error: " . $e->getMessage();
         JsonResponse(0, $data);
+    }
+}
+
+function deleteArrayElementByKey($array, $key)
+{
+    if (array_key_exists($key, $array)) {
+        unset($array[$key]);
+        return $array;
+    } else {
+        return $array;
     }
 }
 
