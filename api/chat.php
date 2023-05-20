@@ -2,7 +2,7 @@
 
 $_data = [];
 
-function openAIChatCompletionsRequest($param, $apiKey)
+function openAIChatCompletionsRequest($param, $apikey)
 {
     $ch = curl_init('https://api.openai.com/v1/chat/completions');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -10,7 +10,8 @@ function openAIChatCompletionsRequest($param, $apiKey)
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
+        'Content-Length: ' . strlen($param),
+        'Authorization: Bearer ' . $apikey
     ));
     $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $response = curl_exec($ch);
@@ -24,11 +25,7 @@ function openAIChatCompletionsRequest($param, $apiKey)
             if (!$data) {
                 throw new Exception("无法解析响应数据");
             }
-            if (isset($data['object']) && $data['object'] === 'chat.completion') {
-                return $data;
-            } else {
-                throw new Exception('出现异常:' . $response);
-            }
+            return $data;
         } else {
             throw new Exception('请求失败，HTTP状态码：' . $status_code);
         }
@@ -46,9 +43,7 @@ function index()
     if (empty($_POST['param'])) {
         return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
-    $post_param = json_decode($_POST['param'], true);
-    var_dump($_POST);
-    var_dump($post_param);
+    $post_param = json_decode($_POST['param'], true);;
     $apiKey  = $post_param['apiKey'];
     if (empty($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
@@ -56,7 +51,6 @@ function index()
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
     try {
         $post_param = deleteArrayElementByKey($post_param, 'apiKey');
-        var_dump($post_param);
         $data = openAIChatCompletionsRequest($post_param, $apiKey);
         JsonResponse(1, $data);
     } catch (Exception $e) {
