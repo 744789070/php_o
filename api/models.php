@@ -18,7 +18,7 @@ function getAvailableModels($apiKey)
     if (!$responseData) {
         throw new Exception("无法解析响应数据");
     }
-    return $responseData['models'];
+    return $responseData;
 }
 
 
