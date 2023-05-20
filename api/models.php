@@ -2,6 +2,12 @@
 
 function getAvailableModels($apiKey)
 {
+
+    // 检查参数合法性
+    if (empty($apiKey) || !is_string($apiKey)) {
+        throw new Exception("参数 'apiKey' 不合法");
+    }
+
     $ch = curl_init('https://api.openai.com/v1/models');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -20,7 +26,6 @@ function getAvailableModels($apiKey)
     }
     return $responseData;
 }
-
 
 function JsonResponse($code, $data)
 {

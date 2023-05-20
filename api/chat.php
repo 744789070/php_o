@@ -7,6 +7,11 @@ function openAIChatCompletionsRequest($prompt, $maxTokens, $temperature, $model,
         throw new Exception("参数 'prompt' 必须是一个非空字符串");
     }
 
+    // 检查参数合法性
+    if (empty($apiKey) || !is_string($apiKey)) {
+        throw new Exception("参数 'apiKey' 不合法");
+    }
+
     if (!is_int($maxTokens) || $maxTokens <= 0) {
         throw new Exception("参数 'maxTokens' 必须是一个大于零的整数");
     }
