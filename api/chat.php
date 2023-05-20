@@ -7,11 +7,6 @@ function openAIChatCompletionsRequest($prompt, $maxTokens, $temperature, $model,
         throw new Exception("参数 'prompt' 必须是一个非空字符串");
     }
 
-    // 检查参数合法性
-    if (empty($apiKey) || !is_string($apiKey)) {
-        throw new Exception("参数 'apiKey' 不合法");
-    }
-
     if (!is_int($maxTokens) || $maxTokens <= 0) {
         throw new Exception("参数 'maxTokens' 必须是一个大于零的整数");
     }
@@ -80,6 +75,12 @@ function index()
     $n = isset($_GET['n']) ? intval($_GET['n']) : 0;
     $stop = isset($_GET['stop']) ? $_GET['stop'] : '';
     $apiKey  = $_GET['apiKey'] ?? '';
+
+    // 检查参数合法性
+    if (empty($apiKey) || !is_string($apiKey)) {
+        return JsonResponse(0, "参数 'apiKey' 不合法");
+    }
+
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
 
     try {
