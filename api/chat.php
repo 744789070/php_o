@@ -66,7 +66,7 @@ function index()
     }
 
     $param['messages'] = $_POST['messages'];
-
+    JsonResponse(0, $_POST);
     $apiKey  = $_POST['apiKey'] ?? '';
     if (empty($apiKey) || !is_string($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
