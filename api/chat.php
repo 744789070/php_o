@@ -47,6 +47,7 @@ function index()
         return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
     $post_param = json_decode($_POST['param']);
+    var_dump($_POST);
     $apiKey  = $post_param['apiKey'] ?? '';
     if (empty($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
@@ -54,6 +55,7 @@ function index()
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
     try {
         $post_param = deleteArrayElementByKey($post_param, 'apiKey');
+        var_dump($post_param);
         $data = openAIChatCompletionsRequest($post_param, $apiKey);
         JsonResponse(1, $data);
     } catch (Exception $e) {
