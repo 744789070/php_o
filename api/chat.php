@@ -34,7 +34,6 @@ function JsonResponse($code, $data, $msg = "")
 
 function index()
 {
-    return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     if (empty($_POST['param'])) {
         return JsonResponse(0, "参数不合法 :" . json_encode($_POST));
     }
