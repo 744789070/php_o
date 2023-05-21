@@ -21,16 +21,16 @@
     },
     "routes": [
         {
+            "src": "/",
+            "dest": "/api/v"
+        },
+        {
             "src": "/chat",
             "dest": "/api/chat"
         },
         {
             "src": "/models",
             "dest": "/api/models"
-        },
-        {
-            "src": "/",
-            "dest": "/api/v"
         }
     ]
 }

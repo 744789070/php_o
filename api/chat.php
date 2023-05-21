@@ -4,17 +4,16 @@
 function openAIChatCompletionsRequest($param, $apikey)
 {
     $ch = curl_init('https://api.openai.com/v1/chat/completions');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apikey
+    curl_setopt_array($ch, array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($param),
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apikey
+        ),
+        CURLOPT_TIMEOUT => 60
     ));
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-
     $response = curl_exec($ch);
     curl_close($ch);
     // 处理响应
@@ -33,18 +32,19 @@ function JsonResponse($code, $data, $msg = "")
 
 function index()
 {
-    var_dump($_POST);
     if (empty($_POST['param'])) {
         return JsonResponse(0, "参数不合法 V1 :" . json_encode($_POST));
     }
+    if (empty($_POST['apiKey'])) {
+        return JsonResponse(0, "参数 'apiKey' 不合法 :" . json_encode($_POST));
+    }
+    $apiKey  = $_POST['apiKey'];
     $post_param = json_decode($_POST['param'], true);;
-    $apiKey  = $post_param['apiKey'];
     if (empty($apiKey)) {
         return JsonResponse(0, "参数 'apiKey' 不合法");
     }
     $apiKey = "sk-oguQUhc4PYfNXSvAT3OHT3BlbkFJY20" . $apiKey;
     try {
-        $post_param = deleteArrayElementByKey($post_param, 'apiKey');
         $data = openAIChatCompletionsRequest($post_param, $apiKey);
         JsonResponse(1, $data);
     } catch (Exception $e) {
@@ -53,15 +53,6 @@ function index()
     }
 }
 
-function deleteArrayElementByKey($array, $key)
-{
-    if (array_key_exists($key, $array)) {
-        unset($array[$key]);
-        return $array;
-    } else {
-        return $array;
-    }
-}
 
 
 
